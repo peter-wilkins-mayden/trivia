@@ -10,12 +10,12 @@ class GoldenMasterTest extends PHPUnit_Framework_TestCase {
 
     function testGenerateOutput() {
         $this->markTestSkipped();
-        $times = 20000;
+        $times = 1000;
         $this->generateMany($times, $this->gmPath);
     }
 
     function testOutputMatchesGoldenMaster() {
-        $times = 20000;
+        $times = 1000;
         $actualPath = '/tmp/actual.txt';
         $this->generateMany($times, $actualPath);
         $file_content_gm = file_get_contents($this->gmPath);

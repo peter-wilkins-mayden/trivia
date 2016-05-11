@@ -1,0 +1,10 @@
+{
+  "autoload": {
+    "psr-4": {
+      "": "/"
+    }
+  },
+  "require": {
+    "crysalead/kahlan": "^2.5"
+  }
+}
