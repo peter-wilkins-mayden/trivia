@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__.'/Game.php';
+include_once 'Game.php';
 
 $notAWinner;
 
