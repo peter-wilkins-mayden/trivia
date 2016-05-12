@@ -1,7 +1,6 @@
 <?php
 
-include_once 'Game.php';
-include_once 'OutputLayerConsole.php';
+include_once 'vendor/autoload.php';
 
 
   $aGame = new Game();
