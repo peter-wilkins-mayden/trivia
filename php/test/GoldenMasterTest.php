@@ -5,7 +5,7 @@ class GoldenMasterTest extends PHPUnit_Framework_TestCase {
     private $gmPath;
 
     function setUp() {
-        $this->gmPath = 'gm.txt';
+        $this->gmPath = '../gm.txt';
     }
 
     function testGenerateOutput() {
@@ -39,7 +39,7 @@ class GoldenMasterTest extends PHPUnit_Framework_TestCase {
     private function generateOutput($seed) {
         ob_start();
         srand($seed);
-        require 'GameRunner.php';
+        require '../GameRunner.php';
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
