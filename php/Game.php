@@ -30,6 +30,8 @@ class Game
 
     const BOARD_SIZE = 12;
 
+    const WRONG_ANSWER = 7;
+
     function __construct()
     {
         $this->generateQuestions();
@@ -42,7 +44,7 @@ class Game
         $this->purses[$this->howManyPlayers()] = 0;
         $this->inPenaltyBox[$this->howManyPlayers()] = false;
 
-        $this->outputPlayerAdded($playerName);
+        OutputLayerConsole::outputPlayerAdded($playerName);
         $this->outputPlayerNumber();
         return true;
     }
@@ -58,16 +60,25 @@ class Game
             $dice = rand(0, 5) + 1;
             $this->roll($dice);
 
-            if (rand(0, 9) == 7) {
+            if ($this->givenAnswer() != self::WRONG_ANSWER) {
+                if ($this->playerIsInPenaltyBox() &&
+                    !$this->isGettingOutOfPenaltyBox
+                ) {
+                    $notAWinner = true;
+                } else {
+                    $this->outputCorrectAnswer();
+                    $this->purses[$this->currentPlayer]++;
+                    $this->outputPlayerBalance();
+                    $notAWinner = $this->didPlayerWin();
+                }
+            } else {
                 $this->outputIncorrectAnswer();
                 $this->outputPlayerSentToPenaltyBox();
                 $this->putPlayerIntoPenaltyBox();
-
-                $this->errNextPlayer();
                 $notAWinner = true;
-            } else {
-                $notAWinner = $this->wasCorrectlyAnswered();
             }
+            $this->errNextPlayer();
+
         } while ($notAWinner);
     }
 
@@ -87,30 +98,13 @@ class Game
             }
         }
         $this->moveAlongBoard($roll);
-        $this->outputPlayerLocation();
+        OutputLayerConsole::outputPlayerLocation(
+            $this->players[$this->currentPlayer],
+            $this->places[$this->currentPlayer]);
         $this->outputCategory();
         $this->askQuestion();
     }
-
-    function wasCorrectlyAnswered()
-    {
-        if ($this->playerIsInPenaltyBox() &&
-            !$this->isGettingOutOfPenaltyBox
-        ) {
-            $this->errNextPlayer();
-            return true;
-        }
-        $this->outputCorrectAnswer();
-        $this->purses[$this->currentPlayer]++;
-        $this->outputPlayerBalance();
-
-        $winner = $this->didPlayerWin();
-        $this->errNextPlayer();
-
-        return $winner;
-
-    }
-
+    
 
     function askQuestion()
     {
@@ -133,10 +127,6 @@ class Game
         return [self::POP, self::SCIENCE, self::SPORTS, self::ROCK][$this->places[$this->currentPlayer] % 4];
     }
 
-    function wrongAnswer()
-    {
-
-    }
 
 
     function didPlayerWin()
@@ -206,12 +196,6 @@ class Game
         echoln("The category is " . $this->currentCategory());
     }
 
-    private function outputPlayerLocation()
-    {
-        echoln($this->players[$this->currentPlayer]
-            . "'s new location is "
-            . $this->places[$this->currentPlayer]);
-    }
 
     private function outputPlayerNotLeavingPenaltyBox()
     {
@@ -236,13 +220,6 @@ class Game
         echoln("They have rolled a " . $roll);
     }
 
-    /**
-     * @param $playerName
-     */
-    private function outputPlayerAdded($playerName)
-    {
-        echoln($playerName . " was added");
-    }
 
     private function outputPlayerNumber()
     {
@@ -278,5 +255,13 @@ class Game
         if ($this->currentPlayer == count($this->players)) {
             $this->currentPlayer = 0;
         }
+    }
+
+    /**
+     * @return int
+     */
+    private function givenAnswer()
+    {
+        return rand(0, 9);
     }
 }

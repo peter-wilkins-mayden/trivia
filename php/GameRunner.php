@@ -1,6 +1,7 @@
 <?php
 
 include_once 'Game.php';
+include_once 'OutputLayerConsole.php';
 
 
   $aGame = new Game();
